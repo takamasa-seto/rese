@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Shop;
+use App\Models\Favorite;
 
 class ShopController extends Controller
 {
@@ -23,7 +25,16 @@ class ShopController extends Controller
         }
         $regions = array_unique($regions);
         $genres = array_unique($genres);
-        
+
+        /* お気に入り店リストを生成 */
+        $favorites = array();
+        if ( Auth::check() ) {
+            $tmp_favorites = Favorite::select()->UserSearch(Auth::id())->get();
+            foreach ($tmp_favorites as $tmp_favorite) {
+                $favorites[] = $tmp_favorite['shop_id'];
+            }
+        }
+
         /* 検索キーの取得 */
         $search_region = session()->has('search_region') ? session('search_region') : $all_area;
         if( $request->has('search_region') ) $search_region = $request->search_region;
@@ -40,14 +51,18 @@ class ShopController extends Controller
             $search_name = $request->search_name;
             session(['search_name' => $search_name]);
         }
-        
+
+        /* 検索実行　*/
         $shops = Shop::select()
             ->RegionSearch($search_region)
             ->GenreSearch($search_genre)
             ->NameSearch($search_name)
             ->get();
+        
+        /* viewに渡す用にデータを加工 */
         foreach ($shops as $shop) {
             $shop['image_url'] = Storage::url($shop['image_url']);
+            $shop['favorite'] = in_array($shop['id'], $favorites);
         }
 
         return view('shop_index', compact('shops', 'regions', 'genres'));

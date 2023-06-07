@@ -16,16 +16,30 @@
                         </button>
                     </x-slot>
                     <x-slot name="content">
-                        <!-- Authentication -->
-                        <x-dropdown-link :href="url('/')">
-                                Home
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('register')">
-                                Registration
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('login')">
-                                Login
-                        </x-dropdown-link>
+                        @if ( Auth::check() )
+                            <x-dropdown-link :href="url('/')">
+                                {{ __('Go Home') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="url('/')">
+                                {{ __('Go to page Mypage') }}
+                            </x-dropdown-link>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link onclick="event.preventDefault(); this.closest('form').submit();">
+                                    {{ __('Logout') }}
+                                </x-dropdown-link>
+                            </form>
+                        @else
+                            <x-dropdown-link :href="url('/')">
+                                {{ __('Go Home') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('register')">
+                                {{ __('Register') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('login')">
+                                {{ __('Login') }}
+                            </x-dropdown-link>
+                        @endif
                     </x-slot>
                 </x-dropdown>
                 <div>

@@ -87,7 +87,14 @@
                     </div>
                     <div class="flex justify-between items-center mt-2">
                         <button class="text-xs h-6 rounded-md bg-blue-600 text-white px-3">詳しくみる</button>
-                        <button class="text-2xl text-gray-100">&#9829;</button>
+                        @if( Auth::check() )
+                            <form method="POST" action="{{ url('/favorite') }}">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                                <input type="hidden" name="shop_id" value="{{ $shop['id'] }}">
+                                <button class="text-2xl {{ $shop['favorite'] ? 'text-red-500' : 'text-gray-100' }}" type="submit">&#9829;</button>
+                            </form>
+                        @endif
                     </div>
                 </div>            
             </div>
