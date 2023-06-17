@@ -10,6 +10,9 @@ use App\Models\Favorite;
 
 class ShopController extends Controller
 {
+    /*
+        店の一覧表示
+    */
     public function index(Request $request)
     {
         $all_area = 'All area';     // 全地域のフィルタに表示する文字列
@@ -66,5 +69,22 @@ class ShopController extends Controller
         }
 
         return view('shop_index', compact('shops', 'regions', 'genres'));
+    }
+
+    /*
+        店の詳細表示
+    */
+    public function detail(Request $request, $shop_id)
+    {
+        $shop = Shop::find($shop_id);
+        $shop['image_url'] = Storage::url($shop['image_url']);
+        
+        $today = now()->format('Y-m-d');
+        $reserve_date = $request->has('date') ? $request->date : $today;
+        
+        $time_array = array("17:00", "17:30", "18:00");
+        $num_array = array(1, 2, 3);
+
+        return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_array', 'num_array'));
     }
 }

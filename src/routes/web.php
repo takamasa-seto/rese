@@ -16,6 +16,7 @@ use App\Http\Controllers\FavoriteController;
 
 Route::get('/', [ShopController::class, 'index']);
 Route::post('/favorite', [FavoriteController::class, 'flip']);
+Route::get('/detail/{shop_id}', [ShopController::class, 'detail']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

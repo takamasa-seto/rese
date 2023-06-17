@@ -77,7 +77,7 @@
             @foreach ($shops as $shop)
             <div class="w-56 bg-white rounded-md shadow-md mb-4">
                 <div>
-                    <img class="w-full h-28 object-cover rounded-t-md" src={{ $shop['image_url'] }}>
+                    <img class="w-full h-28 object-cover rounded-t-md" src="{{ $shop['image_url'] }}">
                 </div>
                 <div class="p-3">
                     <h2 class="font-bold">{{ $shop['name'] }}</h2>
@@ -86,7 +86,7 @@
                         <span>#{{ $shop['genre'] }}</span>
                     </div>
                     <div class="flex justify-between items-center mt-2">
-                        <button class="text-xs h-6 rounded-md bg-blue-600 text-white px-3">詳しくみる</button>
+                        <a class="text-xs h-6 rounded-md bg-blue-600 text-white px-3 pt-1" href="{{ url('/detail/'.$shop['id']) }}">詳しくみる</a>
                         @if( Auth::check() )
                             <form method="POST" action="{{ url('/favorite') }}">
                                 @csrf
