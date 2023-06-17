@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Shop;
 use App\Models\Favorite;
+use App\Models\Table;
+use DateTime;
 
 class ShopController extends Controller
 {
@@ -72,6 +74,71 @@ class ShopController extends Controller
     }
 
     /*
+        時間を分に変換する（プライベート関数）
+    */
+    private function timeToMin($time)
+    {
+        $t_array = explode(':', $time);
+        $hour = $t_array[0] * 60;
+        $second = round($t_array[2] / 60, 2);
+        $mins = $hour + $t_array[1] + $second;
+        return $mins;
+    }
+
+    /*
+        店の予約時間リストを取得する（プライベート関数）
+    */
+    private function getTimeArray($date, $operation_pattern, $time_per_reservation)
+    {
+        $time_array = array();
+        $tmp_date = new DateTime($date);
+        $w = (int)date_format( $tmp_date, 'w');
+        $minus_min = $this->timeToMin($time_per_reservation);
+        switch( $operation_pattern ) {
+            case 1:
+                if ( 1 != $w ) {
+                    $start_time = new DateTime($tmp_date->format('Y-m-d'.' 11:00:00'));
+                    $end_time = new DateTime($tmp_date->format('Y-m-d'.' 22:00:00'));
+                    $end_time->modify('-'.$minus_min.' minutes');
+                    for ($tmp_time = $start_time; $tmp_time <= $end_time; $tmp_time->modify('+30 minutes')) {
+                        $time_array[] = $tmp_time->format('H:i');
+                    }
+                }
+                break;
+            case 2:
+                $start_time = new DateTime($tmp_date->format('Y-m-d'.' 17:00:00'));
+                $end_time = new DateTime($tmp_date->format('Y-m-d'.' 23:00:00'));
+                $end_time->modify('-'.$minus_min.' minutes');
+                for ($tmp_time = $start_time; $tmp_time <= $end_time; $tmp_time->modify('+30 minutes')) {
+                    $time_array[] = $tmp_time->format('H:i');
+                }
+                break;
+        }
+        return $time_array;
+    }
+
+    /*
+        店の予約人数リストを取得する（プライベート関数）
+    */
+    private function getNumArray($shop_id)
+    {
+        $tables = Table::select()->ShopIdSearch($shop_id)->get();
+        $max_num = 0;
+        foreach( $tables as $table ) {
+            if( $max_num < $table->seat_num ) {
+                $max_num = $table->seat_num;
+            }
+        }
+        
+        $num_array = array();
+        for( $i = 1; $i <= $max_num; $i++ ) {
+            $num_array[] = $i;
+        }
+
+        return $num_array;
+    }
+
+    /*
         店の詳細表示
     */
     public function detail(Request $request, $shop_id)
@@ -82,8 +149,8 @@ class ShopController extends Controller
         $today = now()->format('Y-m-d');
         $reserve_date = $request->has('date') ? $request->date : $today;
         
-        $time_array = array("17:00", "17:30", "18:00");
-        $num_array = array(1, 2, 3);
+        $time_array = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
+        $num_array = $this->getNumArray($shop['id']);
 
         return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_array', 'num_array'));
     }

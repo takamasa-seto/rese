@@ -19,4 +19,12 @@ class Table extends Model
     {
         return $this->belongsTo(Shop::class);
     }
+
+    public function scopeShopIdSearch($query, $shop_id)
+    {
+        if (!empty($shop_id)) {
+            $query->where('shop_id', $shop_id);
+        }
+    }
+
 }
