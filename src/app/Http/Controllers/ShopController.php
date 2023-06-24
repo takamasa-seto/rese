@@ -147,7 +147,12 @@ class ShopController extends Controller
         $shop['image_url'] = Storage::url($shop['image_url']);
         
         $today = now()->format('Y-m-d');
-        $reserve_date = $request->has('date') ? $request->date : $today;
+        if( $request->has('date') ) {
+            $reserve_date = $request->date;
+        } else {
+            $reserve_date = session()->has('date') ? session('date') : $today;
+        }
+        session(['date' => $reserve_date]);
         
         $time_array = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
         $num_array = $this->getNumArray($shop['id']);

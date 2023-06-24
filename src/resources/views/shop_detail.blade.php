@@ -4,12 +4,12 @@
       show_txt = reserve_num + '人';
       document.getElementById('reserve_num_trigger').innerHTML = show_txt;
       document.getElementById('reserve_num_confirm').innerHTML = show_txt;
-      document.getElementById('reserve_num_input').innerHTML = reserve_num;
+      document.getElementById('reserve_num_input').value = reserve_num;
     }
     function on_reserve_time_changed(reserve_time) {
       document.getElementById('reserve_time_trigger').innerHTML = reserve_time;
       document.getElementById('reserve_time_confirm').innerHTML = reserve_time;
-      document.getElementById('reserve_time_input').innerHTML = reserve_time;
+      document.getElementById('reserve_time_input').value = reserve_time;
     }
   </script>
 
@@ -19,7 +19,7 @@
     <div class="w-full sm:w-6/12 mt-6">
       <!-- 店名 -->
       <div class="flex items-center">
-        <a class="bg-white rounded shadow-md w-6 pl-2 font-bold" href="{{url( '/') }}"> < </a>
+        <a class="bg-white rounded shadow-md w-6 pl-2 font-bold" href="{{url('/') }}"> < </a>
         <h1 class="pl-2 font-bold text-2xl">{{ $shop['name'] }}</h1>
       </div>
       
@@ -57,7 +57,7 @@
             <x-slot name="trigger">
                 <button class="flex items-center bg-white rounded hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                     <div class="w-48 text-left py-1 px-3">
-                      <span id="reserve_time_trigger">{{ empty($time_array) ? "予約できません" : $time_array[0] }}</span>
+                      <span id="reserve_time_trigger">{{ empty($time_array) ? "定休日" : $time_array[0] }}</span>
                     </div>
 
                     <div class="ml-1">
@@ -137,12 +137,14 @@
         </table>
       </div>
 
-      <form action="" >
-        <input type="hidden" id="reserve_shop_input" value="{{ $shop['id'] }}">
-        <input type="hidden" id="reserve_date_input" value="{{ $reserve_date }}">
-        <input type="hidden" id="reserve_time_input" value="{{ empty($time_array) ? '' : $time_array[0] }}">
-        <input type="hidden" id="reserve_num_input" value="{{ empty($num_array) ? '' : $num_array[0] }}">
-        <button class="bg-blue-700 text-white w-full py-4 rounded-b absolute bottom-0 left-0">予約する</button>  
+      <form method="POST" action="{{ url('/reserve') }}" >
+        @csrf
+        <input type="hidden" id="reserve_shop_input" name="shop_id" value="{{ $shop['id'] }}">
+        <input type="hidden" id="reserve_date_input" name="date" value="{{ $reserve_date }}">
+        <input type="hidden" id="reserve_time_input" name="start_time" value="{{ empty($time_array) ? '' : $time_array[0] }}">
+        <input type="hidden" id="reserve_num_input" name="number_of_people" value="{{ empty($num_array) ? '' : $num_array[0] }}">
+        <input type="hidden" id="reserve_length" name="time_per_reservation" value="{{ $shop['time_per_reservation'] }}">
+        <button type="submit" class="bg-blue-700 text-white w-full py-4 rounded-b absolute bottom-0 left-0">予約する</button>
       </form>
       
     </div>
