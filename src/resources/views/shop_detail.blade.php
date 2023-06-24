@@ -42,13 +42,13 @@
     </div>
 
     <!-- 予約 -->
-    <div class="w-full h-96 sm:w-5/12 sm:h-auto max-sm:mt-5 bg-blue-600 rounded p-2 sm:p-5 relative">
+    <div class="w-full h-72 sm:w-5/12 sm:h-auto max-sm:mt-5 bg-blue-600 rounded p-2 sm:p-5 relative">
       <h1 class="text-white font-bold text-2xl">予約</h1>
-
+      <p class="text-white">{{ $time_explanation }}</p>
       <!-- 日付の選択 -->
       <form method="GET" action="{{ url('/detail/'.$shop['id']) }}" name="calender_form">
         @csrf
-        <input class="rounded py-1 mt-5" type="date" id="date" name="date" value="{{ $reserve_date }}" min="{{ $today }}" onchange="document.calender_form.submit()" />
+        <input class="rounded py-1 mt-3" type="date" id="date" name="date" value="{{ $reserve_date }}" min="{{ $today }}" onchange="document.calender_form.submit()" />
       </form>
       
       <!-- 時間のドロップダウン -->
@@ -100,7 +100,7 @@
       </div>
 
       <!-- 予約内容の表示 -->
-      <div class="bg-blue-500 rounded mt-4 p-2 sm:p-4">
+      <div class="max-sm:hidden bg-blue-500 rounded mt-4 p-4">
         <table class="text-white">
           <tr>
             <td>
@@ -144,7 +144,7 @@
         <input type="hidden" id="reserve_time_input" name="start_time" value="{{ empty($time_array) ? '' : $time_array[0] }}">
         <input type="hidden" id="reserve_num_input" name="number_of_people" value="{{ empty($num_array) ? '' : $num_array[0] }}">
         <input type="hidden" id="reserve_length" name="time_per_reservation" value="{{ $shop['time_per_reservation'] }}">
-        <button type="submit" class="bg-blue-700 text-white w-full py-4 rounded-b absolute bottom-0 left-0">予約する</button>
+        <button type="submit" class="bg-blue-700 text-white disabled:text-blue-500 w-full py-4 rounded-b absolute bottom-0 left-0" {{ empty($time_array) ? 'disabled' : '' }}>予約する</button>
       </form>
       
     </div>

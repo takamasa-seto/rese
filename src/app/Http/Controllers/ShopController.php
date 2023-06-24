@@ -96,6 +96,7 @@ class ShopController extends Controller
         $minus_min = $this->timeToMin($time_per_reservation);
         switch( $operation_pattern ) {
             case 1:
+                $explanation = "営業時間11:00～22:00、月曜定休";
                 if ( 1 != $w ) {
                     $start_time = new DateTime($tmp_date->format('Y-m-d'.' 11:00:00'));
                     $end_time = new DateTime($tmp_date->format('Y-m-d'.' 22:00:00'));
@@ -106,6 +107,7 @@ class ShopController extends Controller
                 }
                 break;
             case 2:
+                $explanation = "営業時間17:00～23:00、年中無休";
                 $start_time = new DateTime($tmp_date->format('Y-m-d'.' 17:00:00'));
                 $end_time = new DateTime($tmp_date->format('Y-m-d'.' 23:00:00'));
                 $end_time->modify('-'.$minus_min.' minutes');
@@ -114,7 +116,7 @@ class ShopController extends Controller
                 }
                 break;
         }
-        return $time_array;
+        return array($explanation, $time_array);
     }
 
     /*
@@ -154,9 +156,9 @@ class ShopController extends Controller
         }
         session(['date' => $reserve_date]);
         
-        $time_array = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
+        [$time_explanation, $time_array] = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
         $num_array = $this->getNumArray($shop['id']);
 
-        return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_array', 'num_array'));
+        return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_explanation', 'time_array', 'num_array'));
     }
 }
