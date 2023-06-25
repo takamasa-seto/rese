@@ -4,7 +4,7 @@
       @if ($is_succeeded)
         <p class="text-center">ご予約ありがとうございます</p>
         <div class="text-center mt-8">
-          <a class="text-xs h-6 rounded-md bg-blue-600 text-white px-3 py-1" href="{{ url('/detail/'.$shop_id) }}">マイページへ</a>
+          <a class="text-xs h-6 rounded-md bg-blue-600 text-white px-3 py-1" href="{{ url('/my_page') }}">マイページへ</a>
         </div>
       @else
         <p class="text-center">定員のためご予約できませんでした</p>

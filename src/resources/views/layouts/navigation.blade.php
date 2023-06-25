@@ -20,7 +20,7 @@
                             <x-dropdown-link :href="url('/')">
                                 {{ __('Go Home') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="url('/')">
+                            <x-dropdown-link :href="url('/my_page')">
                                 {{ __('Go to page Mypage') }}
                             </x-dropdown-link>
                             <form method="POST" action="{{ route('logout') }}">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\Shop;
 use App\Models\Table;
 use Auth;
 use DateTime;
@@ -66,4 +67,33 @@ class ReserveController extends Controller
         return view('done', [ 'shop_id'=>$shop_id , 'is_succeeded'=>$is_succeeded]);
     }
 
+    /*
+        予約の削除
+    */
+    public function destroy(Request $request)
+    {
+        $reservation_id = $request->reservation_id;
+        $reservation = Reservation::find($reservation_id);
+        $reservation->tables()->detach();  //中間テーブルから関連レコードを削除
+        $reservation->delete();
+
+        return redirect('/my_page');
+    }
+
+    /*
+        予約キャンセル確認画面の表示
+    */
+    public function showCancel(Request $request)
+    {
+        $reservation_id = $request->reservation_id;
+        $reservation = Reservation::find($reservation_id);
+        $shop_id = $reservation->tables()->first()->shop_id;
+        $shop_name = Shop::find($shop_id)->name;
+        $dtime = new DateTime($reservation->start_time);
+        $date = $dtime->format('Y-m-d');
+        $start_time = $dtime->format('H:i');
+        $number_of_people = $reservation->number_of_people;
+
+        return view('cancel', compact('reservation_id', 'shop_name', 'date', 'start_time', 'number_of_people'));
+    }
 }

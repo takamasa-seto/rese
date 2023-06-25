@@ -15,8 +15,8 @@ class FavoriteController extends Controller
     */
     public function flip(Request $request)
     {
-        if( !$request->has('user_id') ) return redirect('/');
-        if( !$request->has('shop_id') ) return redirect('/');
+        if( !$request->has('user_id') ) return back();
+        if( !$request->has('shop_id') ) return back();
 
         $favorite = Favorite::select()
             ->UserSearch($request->user_id)
@@ -33,6 +33,6 @@ class FavoriteController extends Controller
             Favorite::find($favorite->id)->delete();
         }
         
-        return redirect('/');
+        return back();
     }    
 }

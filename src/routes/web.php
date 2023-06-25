@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReserveController;
+use App\Http\Controllers\MyPageController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +21,8 @@ Route::post('/favorite', [FavoriteController::class, 'flip']);
 Route::get('/detail/{shop_id}', [ShopController::class, 'detail']);
 Route::post('/reserve', [ReserveController::class, 'store'])->middleware(['auth']);
 Route::post('/reserve/delete', [ReserveController::class, 'destroy'])->middleware(['auth']);
+Route::get('/reserve/cancel', [ReserveController::class, 'showCancel'])->middleware(['auth']);
+Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['auth']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
