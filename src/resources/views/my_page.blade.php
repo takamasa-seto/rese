@@ -1,14 +1,14 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 lg:px-8">
-      <h1>{{ Auth::user()->name }}さん</h1>
-      <div class="w-full flex justify-between">
+      <h1 class="text-xl">{{ Auth::user()->name }}さん</h1>
+      <div class="w-full sm:flex sm:justify-between">
         <!-- 予約状況 -->
-        <div class="w-2/5">
-          <h2>予約状況</h2>
+        <div class="sm:w-5/12">
+          <h2 class="text-xl mb-2 mt-4">予約状況</h2>
           <!-- 予約カード一覧 -->
           <div class="flex justify-between flex-wrap">
             @foreach ($reservations as $reservation)
-              <div class="w-60 h-48 bg-blue-600 text-white rounded-md shadow-md mb-4 px-3 py-3 relative">
+              <div class="w-4/5 h-48 bg-blue-600 text-white rounded-md shadow-md mb-4 px-3 py-3 relative">
                 <h3>予約{{  $reservation['reservation_num'] }}</h3>
                 <table class="ml-3">
                   <tr>
@@ -54,8 +54,8 @@
           </div>
         </div>
         <!-- お気に入り店舗 -->
-        <div class="w-3/5">
-          <h2>お気に入り店舗</h2>
+        <div class="sm:w-7/12">
+          <h2 class="text-xl mb-2 mt-4">お気に入り店舗</h2>
           <!-- お気に入りカード一覧 -->
           <div class="flex justify-between flex-wrap">
             @foreach ($favorites as $shop)
