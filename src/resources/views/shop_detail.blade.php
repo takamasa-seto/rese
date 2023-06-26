@@ -16,7 +16,7 @@
   <div class="max-w-7xl mx-auto px-4 lg:px-8 flex justify-between flex-wrap">
     
     <!-- 店の詳細表示 -->
-    <div class="w-full sm:w-6/12 mt-6">
+    <div class="w-full md:w-6/12 mt-6">
       <!-- 店名 -->
       <div class="flex items-center">
         <a class="bg-white rounded shadow-md w-6 pl-2 font-bold" href="{{url('/') }}"> < </a>
@@ -42,7 +42,7 @@
     </div>
 
     <!-- 予約 -->
-    <div class="w-full h-72 sm:w-5/12 sm:h-auto max-sm:mt-5 bg-blue-600 rounded p-2 sm:p-5 relative">
+    <div class="w-full h-72 md:w-5/12 md:h-auto max-md:mt-5 bg-blue-600 rounded p-2 md:p-5 relative">
       <h1 class="text-white font-bold text-2xl">予約</h1>
       <p class="text-white">{{ $time_explanation }}</p>
       <!-- 日付の選択 -->
@@ -100,7 +100,7 @@
       </div>
 
       <!-- 予約内容の表示 -->
-      <div class="max-sm:hidden bg-blue-500 rounded mt-4 p-4">
+      <div class="max-md:hidden bg-blue-500 rounded mt-4 p-4">
         <table class="text-white">
           <tr>
             <td>

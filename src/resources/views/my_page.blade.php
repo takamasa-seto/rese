@@ -1,9 +1,9 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 lg:px-8">
       <h1 class="text-xl">{{ Auth::user()->name }}さん</h1>
-      <div class="w-full sm:flex sm:justify-between">
+      <div class="w-full md:flex md:justify-between">
         <!-- 予約状況 -->
-        <div class="sm:w-5/12">
+        <div class="md:w-5/12">
           <h2 class="text-xl mb-2 mt-4">予約状況</h2>
           <!-- 予約カード一覧 -->
           <div class="flex justify-between flex-wrap">
@@ -54,7 +54,7 @@
           </div>
         </div>
         <!-- お気に入り店舗 -->
-        <div class="sm:w-7/12">
+        <div class="md:w-7/12">
           <h2 class="text-xl mb-2 mt-4">お気に入り店舗</h2>
           <!-- お気に入りカード一覧 -->
           <div class="flex justify-between flex-wrap">
