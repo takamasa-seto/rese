@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Shop;
 use App\Models\Favorite;
 use App\Models\Table;
+use App\Http\Traits\Content;
 use DateTime;
 
 class ShopController extends Controller
 {
+    use Content;
     /*
         店の一覧表示
     */
@@ -71,18 +73,6 @@ class ShopController extends Controller
         }
 
         return view('shop_index', compact('shops', 'regions', 'genres'));
-    }
-
-    /*
-        時間を分に変換する（プライベート関数）
-    */
-    private function timeToMin($time)
-    {
-        $t_array = explode(':', $time);
-        $hour = $t_array[0] * 60;
-        $second = round($t_array[2] / 60, 2);
-        $mins = $hour + $t_array[1] + $second;
-        return $mins;
     }
 
     /*

@@ -6,23 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Shop;
 use App\Models\Table;
+use App\Http\Traits\Content;
+
 use Auth;
 use DateTime;
 
 class ReserveController extends Controller
 {
-    /*
-        時間を分に変換する（プライベート関数）
-    */
-    private function timeToMin($time)
-    {
-        $t_array = explode(':', $time);
-        $hour = $t_array[0] * 60;
-        $second = round($t_array[2] / 60, 2);
-        $mins = $hour + $t_array[1] + $second;
-        return $mins;
-    }
-
+    use Content;
     /*
         予約の登録
     */
