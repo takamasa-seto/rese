@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Shop extends Model
 {
@@ -39,4 +40,10 @@ class Shop extends Model
             $query->where('genre', $genre);
         }
     }
+
+    public function admins(): BelongsToMany
+    {
+        return $this->belongsToMany(Admin::class);
+    }
+
 }
