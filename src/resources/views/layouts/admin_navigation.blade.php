@@ -17,12 +17,16 @@
                     </x-slot>
                     <x-slot name="content">
                         @if ( Auth::check() )
-                            <x-dropdown-link :href="url('/')">
-                                {{ __('Go Home') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="url('/my_page')">
-                                {{ __('Go to page Mypage') }}
-                            </x-dropdown-link>
+                            @if( 0 == Auth::user()->role )
+                                <x-dropdown-link :href="url('admin/index')">
+                                    管理者一覧へ
+                                </x-dropdown-link>
+                            @endif
+                            @if( 1 == Auth::user()->role )
+                                <x-dropdown-link :href="url('admin/reservations')">
+                                    予約一覧へ
+                                </x-dropdown-link>
+                            @endif
                             <form method="POST" action="{{ route('admin.logout') }}">
                                 @csrf
                                 <x-dropdown-link onclick="event.preventDefault(); this.closest('form').submit();">
@@ -30,12 +34,6 @@
                                 </x-dropdown-link>
                             </form>
                         @else
-                            <x-dropdown-link :href="url('/')">
-                                {{ __('Go Home') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('admin.register')">
-                                {{ __('Register') }}
-                            </x-dropdown-link>
                             <x-dropdown-link :href="route('admin.login')">
                                 {{ __('Login') }}
                             </x-dropdown-link>

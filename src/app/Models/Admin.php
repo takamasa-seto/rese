@@ -27,6 +27,7 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
     ];
 
@@ -52,6 +53,13 @@ class Admin extends Authenticatable
     public function shops(): BelongsToMany
     {
         return $this->belongsToMany(Shop::class);
+    }
+
+    public function scopeEmailSearch($query, $email)
+    {
+        if (!empty($email)) {
+            $query->where('email', $email);
+        }
     }
 
 }

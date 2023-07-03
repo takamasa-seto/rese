@@ -5,6 +5,9 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReserveController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MaintenanceController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,6 +34,10 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::prefix('admin')->name('admin.')->group(function(){
+    Route::get('/index', [AdminController::class, 'index'])->middleware(['auth:admin']);
+    Route::post('/add', [AdminController::class, 'store'])->middleware(['auth:admin']);
+    Route::post('/delete', [AdminController::class, 'destroy'])->middleware(['auth:admin']);
+    Route::get('/reservations', [MaintenanceController::class, 'showReservations'])->middleware(['auth:admin']);
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
