@@ -7,19 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AddAdminRequest;
 use App\Models\Admin;
 use App\Models\Shop;
+use App\Http\Traits\Content;
 
 class AdminController extends Controller
 {
+    use Content;
+
     /* 管理者の一覧表示 */
     public function index()
     {
-        if (0 != Auth::user()->role) return redirect('admin/login');
-
-        //役割一覧
-        $role_list = array(
-            '管理者'=>0,
-            '店舗代表者'=>1
-        );
+        if (!$this->isAdmin(Auth::user()->role)) return redirect('admin/login');
 
         //店舗一覧
         $shop_list = array();
@@ -49,12 +46,14 @@ class AdminController extends Controller
             ];
         }
         
-        return view('admin.admin_list', compact('admin_list', 'role_list', 'shop_list'));
+        return view('admin.admin_list', compact('admin_list', 'shop_list'));
     }
     
     /* 管理者の登録 */
     public function store(AddAdminRequest $request)
     {
+        if (!$this->isAdmin(Auth::user()->role)) return redirect('admin/login');
+
         $message = '';
         // Emailが登録ずみか否かで新規作成か更新かを切り替える
         $admin = Admin::select()->EmailSearch($request->email)->get()->toArray();
@@ -92,6 +91,8 @@ class AdminController extends Controller
     /* 管理者の削除 */
     public function destroy(Request $request)
     {
+        if (!$this->isAdmin(Auth::user()->role)) return redirect('admin/login');
+
         $admin_id = $request->admin_id;
         $admin = Admin::find($admin_id);
         $admin->shops()->detach();  //中間テーブルから関連レコードを削除

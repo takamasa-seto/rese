@@ -29,8 +29,8 @@
                 <div class="mb-1">
                     <label for="role" class="inline-block w-12">役割</label>
                     <select name="role">
-                        @foreach ( $role_list as $key => $value )
-                        <option value="{{ $value }}" @if($value === (int)old('role')) selected @endif>{{ $key }}</option>
+                        @foreach ( App\Consts\RoleConst::ROLE_LIST as $key => $val )
+                        <option value="{{ $key }}" @if($key == old('role')) selected @endif>{{ $val }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -63,7 +63,7 @@
                 <tr class="border-t border-black [&>td]:text-left [&>td]:p-4">
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ $admin['name'] }}</td>
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ $admin['email'] }}</td>
-                    <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ array_search($admin['role'], $role_list) }}</td>
+                    <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ App\Consts\RoleConst::ROLE_LIST[$admin['role']] }}</td>
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">
                         @foreach ($admin['shops'] as $shop)
                         {{ $shop['shop_name'] }}<br>

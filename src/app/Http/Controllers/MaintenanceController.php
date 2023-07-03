@@ -9,12 +9,15 @@ use App\Models\Table;
 use App\Models\Reservation;
 use App\Models\Admin;
 use App\Models\User;
+use App\Http\Traits\Content;
 
 class MaintenanceController extends Controller
 {
+    use Content;
+
     public function showReservations(Request $request)
     {
-        if (1 != Auth::user()->role) return redirect('admin/login');
+        if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
 
         $admin_id = Auth::user()->id;
         //店舗一覧
