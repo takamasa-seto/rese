@@ -673,6 +673,10 @@ select {
   margin-left: auto;
   margin-right: auto;
 }
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 .-ml-px {
   margin-left: -1px;
 }
@@ -757,6 +761,9 @@ select {
 .h-28 {
   height: 7rem;
 }
+.h-32 {
+  height: 8rem;
+}
 .h-4 {
   height: 1rem;
 }
@@ -810,6 +817,9 @@ select {
 }
 .w-64 {
   width: 16rem;
+}
+.w-72 {
+  width: 18rem;
 }
 .w-8 {
   width: 2rem;

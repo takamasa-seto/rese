@@ -26,6 +26,9 @@
                                 <x-dropdown-link :href="url('admin/reservations')">
                                     予約一覧へ
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="url('admin/edit')">
+                                    店舗情報の編集
+                                </x-dropdown-link>
                             @endif
                             <form method="POST" action="{{ route('admin.logout') }}">
                                 @csrf

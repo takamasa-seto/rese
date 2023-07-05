@@ -38,6 +38,8 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::post('/add', [AdminController::class, 'store'])->middleware(['auth:admin']);
     Route::post('/delete', [AdminController::class, 'destroy'])->middleware(['auth:admin']);
     Route::get('/reservations', [MaintenanceController::class, 'showReservations'])->middleware(['auth:admin']);
+    Route::get('/edit', [MaintenanceController::class, 'edit'])->middleware(['auth:admin']);
+    Route::post('/shop_update', [MaintenanceController::class, 'update'])->middleware(['auth:admin']);
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
