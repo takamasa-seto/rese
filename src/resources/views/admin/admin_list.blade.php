@@ -1,8 +1,13 @@
 <x-admin-layout>
     <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <!--管理者登録-->
+        <!--お知らせメール作成-->
         <div>
-            <h1 class="text-lg">管理者登録</h1>
+            <h1 class="text-lg">お知らせメール作成</h1>
+            <a class="ml-3 block text-center text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded w-20" href="{{ url('admin/make_announcement') }}">作成</a>
+        </div>
+        <!--管理者登録-->
+        <div class="mt-3">
+            <h1 class="text-lg">管理者登録・変更</h1>
             <form method="POST" action="{{ url('admin/add') }}" class="p-3">
                 @csrf
                 <div>
@@ -44,7 +49,7 @@
                 </div>
                 <div class="ml-8">
                     <button class="text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded w-20" type="submit">
-                        登録
+                        登録・変更
                     </button>
                 </div>
             </form>

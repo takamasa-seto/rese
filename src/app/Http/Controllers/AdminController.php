@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Mail;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddAdminRequest;
 use App\Models\Admin;
 use App\Models\Shop;
+use App\Models\User;
+use App\Mail\SendAnnouncementMail;
 use App\Http\Traits\Content;
 
 class AdminController extends Controller
@@ -101,6 +104,21 @@ class AdminController extends Controller
         $message = '管理者を削除しました。';
         return redirect('/admin/index')->with('message', $message);
  
+    }
+
+    /* お知らせメール作成画面の表示 */
+    public function makeAnnouncement()
+    {
+        return view('/admin/make_announcement');
+    }
+
+    /* お知らせメール送信 */
+    public function send(Request $request)
+    {
+        $users = User::all();
+        Mail::to($users)->send(new SendAnnouncementMail($request->title, $request->content));
+
+        return redirect('/admin/make_announcement')->with('message', "メールを送信しました。");
     }
 
 }

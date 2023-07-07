@@ -40,6 +40,8 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::get('/reservations', [MaintenanceController::class, 'showReservations'])->middleware(['auth:admin']);
     Route::get('/edit', [MaintenanceController::class, 'edit'])->middleware(['auth:admin']);
     Route::post('/shop_update', [MaintenanceController::class, 'update'])->middleware(['auth:admin']);
+    Route::get('/make_announcement', [AdminController::class, 'makeAnnouncement'])->middleware(['auth:admin']);
+    Route::post('/send', [AdminController::class, 'send'])->middleware(['auth:admin']);
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
