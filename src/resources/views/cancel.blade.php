@@ -47,7 +47,7 @@
           </form>
         </div>
         <div>
-          <a class="block h-8 rounded-md bg-blue-600 text-white px-3 pt-1" href="{{ url('/my_page') }}">戻る</a>
+          <a class="block h-8 rounded-md bg-blue-600 text-white px-3 pt-1" href="{{ url('/reserve/edit') }}">戻る</a>
         </div>
       </div>
 

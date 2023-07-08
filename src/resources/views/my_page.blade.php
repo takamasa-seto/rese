@@ -9,7 +9,14 @@
           <div class="flex justify-between flex-wrap">
             @foreach ($reservations as $reservation)
               <div class="w-4/5 h-48 bg-blue-600 text-white rounded-md shadow-md mb-4 px-3 py-3 relative">
-                <h3>予約{{  $reservation['reservation_num'] }}</h3>
+                <div class="flex justify-between">
+                    <h3>予約{{  $reservation['reservation_num'] }}</h3>
+                    <!-- QRコード表示 -->
+                    <form method="GET" action="">
+                        <input type="hidden" name="reservation_id" value="{{ $reservation['id'] }}">
+                        <button type="submit" class="text-sm text-white bg-blue-600 border-solid border border-white hover:bg-gray-200 rounded w-16">QRコード</button>
+                    </form>
+                </div>
                 <table class="ml-3">
                   <tr>
                     <td>
@@ -44,9 +51,9 @@
                     </td>
                   </tr>
                 </table>
-                <form method="GET" action="{{ url('/reserve/cancel') }}">
+                <form method="GET" action="{{ url('/reserve/edit') }}">
                   <input type="hidden" name="reservation_id" value="{{ $reservation['id'] }}">
-                  <button type="submit" class="bg-blue-700 text-white disabled:text-blue-500 w-full py-2 rounded-b absolute bottom-0 left-0">キャンセルする</button>
+                  <button type="submit" class="bg-blue-700 text-white disabled:text-blue-500 w-full py-2 rounded-b absolute bottom-0 left-0">変更</button>
                 </form>
 
               </div>
