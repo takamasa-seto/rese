@@ -669,6 +669,9 @@ select {
 .z-50 {
   z-index: 50;
 }
+.m-6 {
+  margin: 1.5rem;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -706,6 +709,9 @@ select {
 }
 .ml-4 {
   margin-left: 1rem;
+}
+.ml-6 {
+  margin-left: 1.5rem;
 }
 .ml-8 {
   margin-left: 2rem;

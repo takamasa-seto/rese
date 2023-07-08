@@ -35,18 +35,18 @@
                     <th>予約者</th>
                     <th>開始時刻</th>
                     <th>人数</th>
-                    <th>テーブル</th>
                 </tr>
                 @foreach ($reservations as $reservation)
                 <tr class="border-t border-black [&>td]:text-left [&>td]:p-4">
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ $reservation['user_name'] }}</td>
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ $reservation['start_time'] }}</td>
                     <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">{{ $reservation['number_of_people'] }}</td>
-                    <td class="text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:break-words">
-                        @foreach ($reservation['tables'] as $table)
-                        {{ $table }}<br>
-                        @endforeach
+                    <td>
+                        <div>
+                            <a class="block text-center text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded w-20" href="{{ url('/admin/reservations/detail', ['reservation_id' => $reservation['id']]) }}">詳細</a>
+                        </div>
                     </td>
+                    
                 </tr>
                 @endforeach
                 

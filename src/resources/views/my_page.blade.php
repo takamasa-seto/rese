@@ -12,7 +12,7 @@
                 <div class="flex justify-between">
                     <h3>予約{{  $reservation['reservation_num'] }}</h3>
                     <!-- QRコード表示 -->
-                    <form method="GET" action="">
+                    <form method="GET" action="{{ url('/qr_code') }}">
                         <input type="hidden" name="reservation_id" value="{{ $reservation['id'] }}">
                         <button type="submit" class="text-sm text-white bg-blue-600 border-solid border border-white hover:bg-gray-200 rounded w-16">QRコード</button>
                     </form>

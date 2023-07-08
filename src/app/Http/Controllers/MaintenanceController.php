@@ -16,6 +16,9 @@ class MaintenanceController extends Controller
 {
     use Content;
 
+    /*
+        予約一覧の表示
+    */
     public function showReservations(Request $request)
     {
         if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
@@ -117,4 +120,19 @@ class MaintenanceController extends Controller
         $message = '店舗情報を更新しました。';   
         return redirect('/admin/edit') ->with('message', $message);
     }
+
+    public function detail(Request $request, $reservation_id)
+    {
+        if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
+
+        $reservation = Reservation::find($reservation_id);
+        if (empty($reservation)) return redirect('/admin/reservations');
+        
+        $shop_id = $reservation->tables()->first()->shop_id;
+        $shop = Shop::find($shop_id);
+        $user = User::find($reservation->user_id);
+        
+        return view('admin.reservation_detail', compact('reservation', 'shop', 'user'));
+    }
+
 }

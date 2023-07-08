@@ -28,6 +28,7 @@ Route::post('/reserve/update', [ReserveController::class, 'update'])->middleware
 Route::post('/reserve/delete', [ReserveController::class, 'destroy'])->middleware(['auth']);
 Route::get('/reserve/cancel', [ReserveController::class, 'showCancel'])->middleware(['auth']);
 Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['auth']);
+Route::get('/qr_code', [MyPageController::class, 'showQrCode'])->middleware(['auth']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -40,6 +41,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::post('/add', [AdminController::class, 'store'])->middleware(['auth:admin']);
     Route::post('/delete', [AdminController::class, 'destroy'])->middleware(['auth:admin']);
     Route::get('/reservations', [MaintenanceController::class, 'showReservations'])->middleware(['auth:admin']);
+    Route::get('/reservations/detail/{reservation_id}', [MaintenanceController::class, 'detail'])->middleware(['auth:admin']);
     Route::get('/edit', [MaintenanceController::class, 'edit'])->middleware(['auth:admin']);
     Route::post('/shop_update', [MaintenanceController::class, 'update'])->middleware(['auth:admin']);
     Route::get('/make_announcement', [AdminController::class, 'makeAnnouncement'])->middleware(['auth:admin']);

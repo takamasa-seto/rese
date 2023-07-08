@@ -77,4 +77,13 @@ class MyPageController extends Controller
 
         return view('my_page', compact('reservations', 'favorites'));
     }
+
+    /*
+        QRコードを表示する
+    */
+    public function showQrCode(Request $request)
+    {
+        $reservation_id = $request->reservation_id;
+        return view('qr_code', compact('reservation_id'));
+    }
 }
