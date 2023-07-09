@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Mail;
+use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddAdminRequest;
 use App\Models\Admin;
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\Reservation;
 use App\Mail\SendAnnouncementMail;
+use App\Mail\SendRemindMail;
 use App\Http\Traits\Content;
 
 class AdminController extends Controller
@@ -121,4 +124,19 @@ class AdminController extends Controller
         return redirect('/admin/make_announcement')->with('message', "メールを送信しました。");
     }
 
+    /* リマインドメール送信(スケジューラから呼ばれる) */
+    public function reminder()
+    {
+        //同じ日付の予約を検索
+        $t1 = new DateTime();
+        $t2 = new DateTime($t1->format('Y-m-d').' 23:59:59');
+        $reservations = Reservation::select()->EndsAfterSearch($t1)->StartsBeforeSearch($t2)->get();
+
+        foreach($reservations as $reservation) {
+            $shop_id = $reservation->tables()->first()->shop_id;
+            $shop = Shop::find($shop_id);
+            $user = User::find($reservation->user_id);
+            Mail::to($user)->send(new SendRemindMail($reservation, $user, $shop));
+        }
+    }
 }
