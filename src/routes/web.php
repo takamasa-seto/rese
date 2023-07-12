@@ -7,6 +7,7 @@ use App\Http\Controllers\ReserveController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\FeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::post('/reserve/delete', [ReserveController::class, 'destroy'])->middlewar
 Route::get('/reserve/cancel', [ReserveController::class, 'showCancel'])->middleware(['auth']);
 Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['auth']);
 Route::get('/qr_code', [MyPageController::class, 'showQrCode'])->middleware(['auth']);
+Route::get('/feedback/{reservation_id}', [FeedbackController::class, 'create'])->middleware(['auth']);
+Route::post('/feedback/store', [FeedbackController::class, 'store'])->middleware(['auth']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

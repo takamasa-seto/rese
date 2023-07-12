@@ -56,7 +56,8 @@ class MaintenanceController extends Controller
                 'end_time' => $reserve->end_time,
                 'number_of_people' => $reserve->number_of_people,
                 'user_name' => $user->name,
-                'tables' => $tables
+                'tables' => $tables,
+                'score' => $reserve->feedback()->exists() ? $reserve->feedback->score:"未"
             ];
         }
         session(['shop_index' => $shop_index]);

@@ -27,6 +27,11 @@ class Reservation extends Model
         return $this->belongsToMany(Table::class);
     }
 
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class);
+    }
+    
     public function scopeEndsAfterSearch($query, $time)
     {
         if (!empty($time)) {

@@ -25,6 +25,18 @@
                 <p class="ml-3">{{$table['name']}}</p>
                 @endforeach
             </div>
+            <div class="mt-3">
+                <P>[スコア]</p>
+                <p class="ml-3">
+                    {{$reservation->feedback?$reservation->feedback->score:"未入力"}}
+                </p>
+            </div>
+            <div class="mt-3">
+                <P>[コメント]</p>
+                <p class="ml-3">
+                    {{$reservation->feedback?$reservation->feedback->comment:"未入力"}}
+                </p>
+            </div>
             <div class="mt-3 ml-3"">
                 <a class="block text-center text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded w-20" href="{{ url('/admin/reservations') }}">戻る</a>
             </div>
