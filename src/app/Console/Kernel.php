@@ -5,6 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\FeedbackController;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,11 +17,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
         // 予約のリマインダー
         $schedule->call(function() {
             AdminController::reminder();
-        })->dailyAt('8:00'); //->everyMinute();
+        })->dailyAt('8:00');
+
+        // アンケートのお願いメール
+        $schedule->call(function() {
+            FeedbackController::feedbackRequest();
+        })->dailyAt('23:00');
     }
 
     /**
