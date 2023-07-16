@@ -23,19 +23,19 @@ use App\Http\Controllers\FeedbackController;
 Route::get('/', [ShopController::class, 'index']);
 Route::post('/favorite', [FavoriteController::class, 'flip']);
 Route::get('/detail/{shop_id}', [ShopController::class, 'detail']);
-Route::post('/reserve', [ReserveController::class, 'store'])->middleware(['auth']);
-Route::get('/reserve/edit', [ReserveController::class, 'edit'])->middleware(['auth']);
-Route::post('/reserve/update', [ReserveController::class, 'update'])->middleware(['auth']);
-Route::post('/reserve/delete', [ReserveController::class, 'destroy'])->middleware(['auth']);
-Route::get('/reserve/cancel', [ReserveController::class, 'showCancel'])->middleware(['auth']);
-Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['auth']);
-Route::get('/qr_code', [MyPageController::class, 'showQrCode'])->middleware(['auth']);
-Route::get('/feedback/{reservation_id}', [FeedbackController::class, 'create'])->middleware(['auth']);
-Route::post('/feedback/store', [FeedbackController::class, 'store'])->middleware(['auth']);
+Route::post('/reserve', [ReserveController::class, 'store'])->middleware(['verified']);
+Route::get('/reserve/edit', [ReserveController::class, 'edit'])->middleware(['verified']);
+Route::post('/reserve/update', [ReserveController::class, 'update'])->middleware(['verified']);
+Route::post('/reserve/delete', [ReserveController::class, 'destroy'])->middleware(['verified']);
+Route::get('/reserve/cancel', [ReserveController::class, 'showCancel'])->middleware(['verified']);
+Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['verified']);
+Route::get('/qr_code', [MyPageController::class, 'showQrCode'])->middleware(['verified']);
+Route::get('/feedback/{reservation_id}', [FeedbackController::class, 'create'])->middleware(['verified']);
+Route::post('/feedback/store', [FeedbackController::class, 'store'])->middleware(['verified']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';
 
