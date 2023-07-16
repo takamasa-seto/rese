@@ -84,6 +84,7 @@ class ShopController extends Controller
     private function getTimeArray($date, $operation_pattern, $time_per_reservation)
     {
         $time_array = array();
+        $explanation = "";
         $tmp_date = new DateTime($date);
         $w = (int)date_format( $tmp_date, 'w');
         $minus_min = $this->timeToMin($time_per_reservation);
