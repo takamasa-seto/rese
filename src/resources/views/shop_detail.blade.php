@@ -48,7 +48,7 @@
       <!-- 日付の選択 -->
       <form method="GET" action="{{ url('/detail/'.$shop['id']) }}" name="calender_form">
         @csrf
-        <input class="rounded py-1 mt-3" type="date" id="date" name="date" value="{{ $reserve_date }}" min="{{ $today }}" onchange="document.calender_form.submit()" />
+        <input class="rounded py-1 mt-3" type="date" id="date" name="date" value="{{ $reserve_date }}" min="{{ $tomorrow }}" onchange="document.calender_form.submit()" />
       </form>
       
       <!-- 時間のドロップダウン -->

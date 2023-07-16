@@ -142,18 +142,18 @@ class ShopController extends Controller
         $shop = Shop::find($shop_id);
         $shop['image_url'] = Storage::url($shop['image_url']);
         
-        $today = now()->format('Y-m-d');
+        $tomorrow = now()->addDay()->format('Y-m-d');
         if( $request->has('date') ) {
             $reserve_date = $request->date;
         } else {
-            $reserve_date = session()->has('date') ? session('date') : $today;
+            $reserve_date = session()->has('date') ? session('date') : $tomorrow;
         }
         session(['date' => $reserve_date]);
         
         [$time_explanation, $time_array] = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
         $num_array = $this->getNumArray($shop['id']);
 
-        return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_explanation', 'time_array', 'num_array'));
+        return view('shop_detail', compact('shop', 'tomorrow', 'reserve_date', 'time_explanation', 'time_array', 'num_array'));
     }
 
     /*
