@@ -144,6 +144,23 @@
         <input type="hidden" id="reserve_time_input" name="start_time" value="{{ empty($time_array) ? '' : $time_array[0] }}">
         <input type="hidden" id="reserve_num_input" name="number_of_people" value="{{ empty($num_array) ? '' : $num_array[0] }}">
         <input type="hidden" id="reserve_length" name="time_per_reservation" value="{{ $shop['time_per_reservation'] }}">
+        <div class="text-red-600">
+          @error('shop_id')
+            ※{{ $message }} <BR>
+          @enderror
+          @error('date')
+            ※{{ $message }} <BR>
+          @enderror
+          @error('start_time')
+            ※{{ $message }} <BR>
+          @enderror
+          @error('number_of_people')
+            ※{{ $message }} <BR>
+          @enderror
+          @error('time_per_reservation')
+            ※{{ $message }} <BR>
+          @enderror
+        </div>
         <button type="submit" class="bg-blue-700 text-white disabled:text-blue-500 w-full py-4 rounded-b absolute bottom-0 left-0" {{ empty($time_array) ? 'disabled' : '' }}>予約する</button>
       </form>
       

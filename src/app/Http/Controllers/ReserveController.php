@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use App\Models\Shop;
 use App\Models\Table;
 use App\Http\Traits\Content;
+use App\Http\Requests\StoreReservationRequest;
 
 use Auth;
 use DateTime;
@@ -18,7 +19,7 @@ class ReserveController extends Controller
     /*
         予約の登録
     */
-    public function store(Request $request)
+    public function store(StoreReservationRequest $request)
     {
         $user_id = Auth::user()->id;
         $shop_id = $request->shop_id;
