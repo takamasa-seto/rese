@@ -18,7 +18,7 @@ class MyPageController extends Controller
     */
     private function getRreservedShops($user_id)
     {
-        $reservations = Reservation::select()->UserIdSearch($user_id)->get();
+        $reservations = Reservation::select()->UserIdSearch($user_id)->EndsAfterSearch(new DateTime())->get();
         $reserved_shops = array();
         $reservation_num = 1;
         foreach( $reservations as $reservation ) {
