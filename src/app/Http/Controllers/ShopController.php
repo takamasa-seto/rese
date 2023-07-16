@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Admin;
 use App\Models\Shop;
 use App\Models\Favorite;
 use App\Models\Table;
+use App\Http\Requests\UpdateShopRequest;
+use App\Http\Requests\AddShopRequest;
 use App\Http\Traits\Content;
-use DateTime;
 
 class ShopController extends Controller
 {
@@ -151,4 +154,81 @@ class ShopController extends Controller
 
         return view('shop_detail', compact('shop', 'today', 'reserve_date', 'time_explanation', 'time_array', 'num_array'));
     }
+
+    /*
+        店舗情報の更新
+    */
+    public function update(UpdateShopRequest $request)
+    {
+        if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
+
+        //ストレージに画像を登録
+        $image = $request->file('image_file');
+        $path = isset($image) ? $image->store('rese\image', 'public') : '';
+
+        //更新情報を作成
+        $update_info = [
+            'name' => $request->name,
+            'region' => $request->region,
+            'genre' => $request->genre,
+            'description' => $request->description
+        ];
+        if(!empty($path)) $update_info['image_url'] = $path;
+
+        //更新
+        $shop = Shop::find($request->id);
+        $shop->update($update_info);
+
+        $message = '店舗情報を更新しました。';   
+        return redirect('/admin/edit') ->with('message', $message);
+    }
+
+
+    /*
+        店舗情報の追加
+    */
+    public function store(AddShopRequest $request)
+    {
+        if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
+        
+        //ストレージに画像を登録
+        $image = $request->file('image_file');
+        $path = isset($image) ? $image->store('rese\image', 'public') : '';
+
+        //店舗情報を作成
+        $new_info = [
+            'name' => $request->name,
+            'region' => $request->region,
+            'genre' => $request->genre,
+            'operation_pattern' => $request->operation_pattern,
+            'time_per_reservation' => $request->time_per_reservation,
+            'description' => $request->description
+        ];
+        $new_info['image_url'] = empty($path)? null: $path;
+
+        //追加
+        $shop = Shop::create($new_info);
+
+        // テーブル（座席）を追加
+        if ( isset($request->tables) ) {
+            foreach( $request->tables as $key => $value ) {
+                Table::create([
+                    'shop_id' => $shop->id,
+                    'name' => $key,
+                    'seat_num' => $value
+                ]);
+            }
+        }
+
+        // 自身を管理者に登録
+        $admin = Admin::find(Auth::user()->id);
+        if ( 1 == $admin->role ) {
+            //店舗責任者の場合は店舗を登録
+            $admin->shops()->syncWithoutDetaching([$shop->id]);
+        }
+
+        $message = '店舗を新規登録しました。';   
+        return redirect('/admin/new_shop') ->with('message', $message);
+    }
+
 }

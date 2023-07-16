@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
-use App\Http\Requests\UpdateShopRequest;
 use App\Models\Shop;
 use App\Models\Table;
 use App\Models\Reservation;
@@ -95,33 +94,19 @@ class MaintenanceController extends Controller
     }
 
     /*
-        店舗情報の更新
+        店舗情報追加画面の表示
     */
-    public function update(UpdateShopRequest $request)
+    public function add(Request $request)
     {
         if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
 
-        //ストレージに画像を登録
-        $image = $request->file('image_file');
-        $path = isset($image) ? $image->store('rese\image', 'public') : '';
+        return view('admin.shop_adder');
 
-        //更新情報を作成
-        $update_info = [
-            'name' => $request->name,
-            'region' => $request->region,
-            'genre' => $request->genre,
-            'description' => $request->description
-        ];
-        if(!empty($path)) $update_info['image_url'] = $path;
-
-        //更新
-        $admin = Shop::find($request->id);
-        $admin->update($update_info);
-
-        $message = '店舗情報を更新しました。';   
-        return redirect('/admin/edit') ->with('message', $message);
     }
 
+    /*
+        予約詳細画面の表示
+    */
     public function detail(Request $request, $reservation_id)
     {
         if (!$this->isShopStaff(Auth::user()->role)) return redirect('admin/login');
