@@ -157,6 +157,25 @@ class ShopController extends Controller
     }
 
     /*
+        ストレージに画像を保存する(プライベート)
+    */
+    private function myStoreImage($img_file)
+    {
+        $path = '';
+        if(isset($img_file)) {
+            $filename = $img_file->getClientOriginalName();
+            $path = 'rese\image\\'.$filename;
+            if('local' == env('FILESYSTEM_DRIVER')) {
+                Storage::putFileAs('', $img_file, 'public\\'.$path);
+            } else {
+                Storage::putFileAs('', $img_file, $path);
+            }
+            
+        }
+        return $path;
+    }
+
+    /*
         店舗情報の更新
     */
     public function update(UpdateShopRequest $request)
@@ -165,7 +184,7 @@ class ShopController extends Controller
 
         //ストレージに画像を登録
         $image = $request->file('image_file');
-        $path = isset($image) ? $image->store('rese\image', 'public') : '';
+        $path = $this->myStoreImage($image);
 
         //更新情報を作成
         $update_info = [
@@ -194,7 +213,7 @@ class ShopController extends Controller
         
         //ストレージに画像を登録
         $image = $request->file('image_file');
-        $path = isset($image) ? $image->store('rese\image', 'public') : '';
+        $path = $this->myStoreImage($image);
 
         //店舗情報を作成
         $new_info = [
