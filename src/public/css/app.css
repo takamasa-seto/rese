@@ -680,6 +680,10 @@ select {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 .-ml-px {
   margin-left: -1px;
 }
@@ -800,8 +804,14 @@ select {
 .w-16 {
   width: 4rem;
 }
+.w-2\/5 {
+  width: 40%;
+}
 .w-20 {
   width: 5rem;
+}
+.w-3\/5 {
+  width: 60%;
 }
 .w-32 {
   width: 8rem;
@@ -832,6 +842,9 @@ select {
 }
 .w-8 {
   width: 2rem;
+}
+.w-96 {
+  width: 24rem;
 }
 .w-auto {
   width: auto;
@@ -880,6 +893,9 @@ select {
 .cursor-default {
   cursor: default;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 .list-inside {
   list-style-position: inside;
 }
@@ -888,6 +904,9 @@ select {
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.flex-row-reverse {
+  flex-direction: row-reverse;
 }
 .flex-col {
   flex-direction: column;
@@ -915,6 +934,11 @@ select {
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
   border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
 }
+.divide-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-x-reverse: 0;
+  border-right-width: calc(2px * var(--tw-divide-x-reverse));
+  border-left-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
+}
 .overflow-hidden {
   overflow: hidden;
 }
@@ -929,6 +953,9 @@ select {
 }
 .rounded {
   border-radius: 0.25rem;
+}
+.rounded-full {
+  border-radius: 9999px;
 }
 .rounded-lg {
   border-radius: 0.5rem;
@@ -1084,6 +1111,10 @@ select {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
+.px-\[5px\] {
+  padding-left: 5px;
+  padding-right: 5px;
+}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -1152,12 +1183,18 @@ select {
 .text-center {
   text-align: center;
 }
+.text-end {
+  text-align: end;
+}
 .font-sans {
   font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+.text-\[35px\] {
+  font-size: 35px;
 }
 .text-base {
   font-size: 1rem;
@@ -1378,6 +1415,10 @@ select {
   --tw-bg-opacity: 1;
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
+.hover\:text-blue-600:hover {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity));
+}
 .hover\:text-gray-400:hover {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -1491,6 +1532,14 @@ select {
 }
 .disabled\:opacity-25:disabled {
   opacity: 0.25;
+}
+.peer:checked ~ .peer-checked\:text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity));
+}
+.peer:hover ~ .peer-hover\:text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 @media (prefers-color-scheme: dark) {
 

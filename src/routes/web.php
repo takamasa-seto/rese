@@ -8,6 +8,7 @@ use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,10 @@ Route::get('/my_page', [MyPageController::class, 'create'])->middleware(['verifi
 Route::get('/qr_code', [MyPageController::class, 'showQrCode'])->middleware(['verified']);
 Route::get('/feedback/{reservation_id}', [FeedbackController::class, 'create'])->middleware(['verified']);
 Route::post('/feedback/store', [FeedbackController::class, 'store'])->middleware(['verified']);
+
+//Review機能の追加
+Route::get('/review/add/{shop_id}', [ReviewController::class, 'create'])->middleware(['verified']);
+Route::post('/review/store', [ReviewController::class, 'store'])->middleware(['verified']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
