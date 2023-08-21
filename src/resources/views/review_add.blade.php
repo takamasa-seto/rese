@@ -8,8 +8,8 @@
     <div class="max-w-7xl mx-auto px-4 lg:px-8">
         <form method="POST" action="{{ url('/review/store') }}" enctype="multipart/form-data">
         @csrf
-            <div class="flex justify-between flex-wrap divide-x-2">
-                <div class="w-2/5">
+            <div class="md:flex md:justify-between md:flex-wrap md:divide-x-2">
+                <div class="md:w-2/5">
                     <p class="text-center text-2xl my-6">今回のご利用はいかがでしたか？</p>
                     <div class="w-56 bg-white rounded-md shadow-md mb-4 mx-auto">
                         <div>
@@ -30,7 +30,7 @@
                         </div>            
                     </div>
                 </div>
-                <div class="w-3/5 px-6">
+                <div class="md:w-3/5 px-6">
                     <p>体験を評価してください</p>
                     <div class="flex flex-row-reverse justify-end">
                         <input type="radio" id="star5" name="star" value=5 class="hidden peer">
@@ -76,7 +76,7 @@
             <div class="my-6 text-center">
                 <input type="hidden" name="shop_id" value="{{ $shop['id'] }}">
                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                <button type="submit" class="text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded-full w-96">口コミを投稿</button>
+                <button type="submit" class="text-blue-800 bg-white border-solid border border-blue-800 hover:bg-gray-200 rounded-full w-80">口コミを投稿</button>
             </div>
         </form>
 
