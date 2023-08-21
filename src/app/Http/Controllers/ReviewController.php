@@ -69,4 +69,18 @@ class ReviewController extends Controller
         return redirect('/detail/'.$request->shop_id);
 
     }
+
+    /*
+        店舗ごとの口コミ表示
+    */
+    public function shopIndex(Request $request, $shop_id)
+    {
+        $shop = Shop::find($shop_id);
+        $shop['image_url'] = Storage::url($shop['image_url']);
+        $reviews = Review::select()->ShopSearch($shop_id)->get();
+        foreach($reviews as $review) {
+            $review['image_url'] = empty($review['image_url']) ? null : Storage::url($review['image_url']);
+        }
+        return view('review_shop_index', compact('shop', 'reviews'));
+    }
 }

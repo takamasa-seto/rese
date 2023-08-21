@@ -17,4 +17,11 @@ class Review extends Model
         'image_url'
     ];
 
+    public function scopeShopSearch($query, $shop_id)
+    {
+        if (!empty($shop_id)) {
+            $query->where('shop_id', $shop_id);
+        }
+    }
+    
 }
