@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\Shop;
 use App\Models\Favorite;
 use App\Models\Table;
+use App\Models\Review;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\AddShopRequest;
 use App\Http\Traits\Content;
@@ -153,7 +154,15 @@ class ShopController extends Controller
         [$time_explanation, $time_array] = $this->getTimeArray($reserve_date, $shop->operation_pattern, $shop->time_per_reservation);
         $num_array = $this->getNumArray($shop['id']);
 
-        return view('shop_detail', compact('shop', 'tomorrow', 'reserve_date', 'time_explanation', 'time_array', 'num_array'));
+        $my_review = null;
+        if( Auth::check() ){
+            $tmp_review = Review::select()->UserSearch(Auth::id())->ShopSearch($shop_id)->get();
+            $my_review = $tmp_review->isEmpty() ? null : $tmp_review->toArray()[0];
+            if ( !is_null($my_review) ) {
+                $my_review['image_url'] = empty($my_review['image_url']) ? null : Storage::url($my_review['image_url']);
+            }
+        }
+        return view('shop_detail', compact('shop', 'tomorrow', 'reserve_date', 'time_explanation', 'time_array', 'num_array', 'my_review'));
     }
 
     /*

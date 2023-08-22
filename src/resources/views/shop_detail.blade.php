@@ -39,6 +39,46 @@
         <p>{{ $shop['description']}}</p>
       </div>
 
+      <!-- 口コミ一覧へのリンク -->
+      <div class="pt-5">
+        <a href="{{ url('/review/shop_index/'.$shop['id']) }}" class="bg-blue-500 text-white block w-full py-2 text-center">全ての口コミ情報</a>
+      </div>
+
+      <!-- 自身の口コミを表示 -->
+      @if( Auth::check() )
+        @if( is_null($my_review) )
+          <div class="py-5">
+            <a href="{{ url('/review/add/'.$shop['id']) }}" class="underline">口コミを投稿する</a>
+          </div>
+        @else
+          <div class="py-5">
+            <hr>
+            <div class="flex justify-end text-sm">
+              <div class="mr-4">
+                <a href="" class="underline">口コミを編集</a>
+              </div>
+              <div>
+                <a href="" class="underline">口コミを削除</a>
+              </div>
+            </div>
+            <div>
+                @for ($counter = 0; $counter < 5; $counter++)
+                    <span class="{{ $counter < $my_review['star'] ? 'text-blue-600' : 'text-gray-200'}}">★</span>
+                @endfor
+            </div>
+            <div>
+              <p>{{$my_review['comment']}}</p>
+            </div>
+            <div class="w-56">
+                @if (!is_null($my_review['image_url']))
+                    <img src="{{ $my_review['image_url'] }}">
+                @endif
+            </div>
+            <hr>
+          </div>
+        @endif
+      @endif
+
     </div>
 
     <!-- 予約 -->

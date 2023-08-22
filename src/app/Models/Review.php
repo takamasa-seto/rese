@@ -23,5 +23,12 @@ class Review extends Model
             $query->where('shop_id', $shop_id);
         }
     }
-    
+
+    public function scopeUserSearch($query, $user_id)
+    {
+        if (!empty($user_id)) {
+            $query->where('user_id', $user_id);
+        }
+    }
+
 }
