@@ -55,7 +55,7 @@
             <hr>
             <div class="flex justify-end text-sm">
               <div class="mr-4">
-                <a href="" class="underline">口コミを編集</a>
+                <a href="{{ url('/review/edit/'.$shop['id']) }}" class="underline">口コミを編集</a>
               </div>
               <div>
                 <form method="POST" action="{{ url('/review/delete') }}">

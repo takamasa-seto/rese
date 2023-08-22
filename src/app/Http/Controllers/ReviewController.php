@@ -31,6 +31,7 @@ class ReviewController extends Controller
             }
             
         }
+
         return $path;
     }
 
@@ -45,6 +46,7 @@ class ReviewController extends Controller
         $shop['image_url'] = Storage::url($shop['image_url']);
         $tmp_favorites = Favorite::select()->UserSearch(Auth::id())->ShopSearch($shop_id)->get();
         $shop['favorite'] = !$tmp_favorites->isEmpty();
+
         return view('review_add', compact('shop'));
     }
 
@@ -69,8 +71,8 @@ class ReviewController extends Controller
 
         //追加
         $review = Review::create($table);
-        return redirect('/detail/'.$request->shop_id);
 
+        return redirect('/detail/'.$request->shop_id);
     }
 
     /*
@@ -94,7 +96,62 @@ class ReviewController extends Controller
         }
 
         return redirect()->back();
+    }
 
+    /*
+        レビューの編集画面表示
+    */
+    public function edit(Request $request, $shop_id)
+    {
+        if ( !Auth::check() ) return redirect('login');
+
+        $shop = Shop::find($shop_id);
+        $shop['image_url'] = Storage::url($shop['image_url']);
+        $tmp_favorites = Favorite::select()->UserSearch(Auth::id())->ShopSearch($shop_id)->get();
+        $shop['favorite'] = !$tmp_favorites->isEmpty();
+
+        $review = Review::select()->UserSearch(Auth::id())->ShopSearch($shop_id)->first();
+        if ( is_null($review) ) return redirect()->back(); 
+        $review['image_url'] = empty($review['image_url']) ? null : Storage::url($review['image_url']);
+
+        return view('review_edit', compact('shop', 'review'));
+    }
+
+    /*
+        レビューの更新
+    */
+    public function update(AddReviewRequest $request)
+    {
+        if ( !Auth::check() ) return redirect('login');
+        
+        //ストレージに画像を登録
+        $image = $request->file('image_file');
+        $path = $this->myStoreImage($image);
+
+        $table = [
+            'user_id' => $request->user_id,
+            'shop_id' => $request->shop_id,
+            'star' => $request->star,
+            'comment' => $request->comment,
+        ];
+        $table['image_url'] = empty($path)? null: $path;
+
+        //更新
+        $review = Review::select()->UserSearch($request->user_id)->ShopSearch($request->shop_id);
+        switch ($request->img_edit_mode) {
+            case 0:
+                //変更しない
+                $tmp_review = $review->first();
+                $table['image_url'] = $tmp_review['image_url'];
+                break;
+            case 1:
+                //削除
+                $table['image_url'] = null;
+                break;
+        }
+        $review->update($table);
+
+        return redirect('/detail/'.$request->shop_id);
     }
 
     /*
@@ -108,6 +165,7 @@ class ReviewController extends Controller
         foreach($reviews as $review) {
             $review['image_url'] = empty($review['image_url']) ? null : Storage::url($review['image_url']);
         }
+
         return view('review_shop_index', compact('shop', 'reviews'));
     }
 }
