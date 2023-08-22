@@ -16,7 +16,7 @@
                     {{ $review['comment'] }}
                 </div>
                 <div class="w-56">
-                    @if (null != $review['image_url'])
+                    @if (!is_null($review['image_url']))
                         <img src="{{ $review['image_url'] }}">
                     @endif
                 </div>
