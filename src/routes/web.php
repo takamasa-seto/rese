@@ -38,6 +38,7 @@ Route::post('/feedback/store', [FeedbackController::class, 'store'])->middleware
 Route::get('/review/add/{shop_id}', [ReviewController::class, 'create'])->middleware(['verified']);
 Route::post('/review/store', [ReviewController::class, 'store'])->middleware(['verified']);
 Route::get('/review/shop_index/{shop_id}', [ReviewController::class, 'shopIndex']);
+Route::post('/review/delete', [ReviewController::class, 'destroy']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -9,9 +9,12 @@ use Auth;
 use App\Models\Shop;
 use App\Models\Favorite;
 use App\Models\Review;
+use App\Http\Traits\Content;
 
 class ReviewController extends Controller
 {
+    use Content;
+
     /*
         ストレージに画像を保存する(プライベート)
     */
@@ -67,6 +70,30 @@ class ReviewController extends Controller
         //追加
         $review = Review::create($table);
         return redirect('/detail/'.$request->shop_id);
+
+    }
+
+    /*
+        レビューの削除
+    */
+    public function destroy(Request $request)
+    {
+        //投稿したユーザか、管理者のみが削除可能
+        $account_check = false;
+        if ( Auth::guard('admin')->check() ) {
+            if ( $this->isAdmin(Auth::user()->role) ) $account_check = true;
+        }
+        elseif ( Auth::check() ) {
+            if ( Auth::user()->id == $request->user_id ) $account_check = true;
+        }
+
+        //削除
+        if ( $account_check ) {
+            $review = Review::select()->UserSearch($request->user_id)->ShopSearch($request->shop_id);
+            $review->delete();
+        }
+
+        return redirect()->back();
 
     }
 

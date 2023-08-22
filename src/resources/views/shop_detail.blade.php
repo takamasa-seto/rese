@@ -58,7 +58,12 @@
                 <a href="" class="underline">口コミを編集</a>
               </div>
               <div>
-                <a href="" class="underline">口コミを削除</a>
+                <form method="POST" action="{{ url('/review/delete') }}">
+                  @csrf
+                  <input type="hidden" name="shop_id" value="{{ $shop['id'] }}">
+                  <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                  <button type="submit" class="underline">口コミを削除</button>
+                </form>
               </div>
             </div>
             <div>
