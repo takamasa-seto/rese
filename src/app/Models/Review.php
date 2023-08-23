@@ -17,6 +17,16 @@ class Review extends Model
         'image_url'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
     public function scopeShopSearch($query, $shop_id)
     {
         if (!empty($shop_id)) {

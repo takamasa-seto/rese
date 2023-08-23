@@ -65,5 +65,8 @@ Route::prefix('admin')->name('admin.')->group(function(){
         return view('admin.dashboard');
     })->middleware(['auth:admin'])->name('dashboard');
 
+    //Review機能の追加
+    Route::get('/review/manager', [ReviewController::class, 'adminIndex'])->middleware(['auth:admin']);
+
     require __DIR__.'/admin.php';
 });

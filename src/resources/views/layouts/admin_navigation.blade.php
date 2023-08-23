@@ -21,6 +21,9 @@
                                 <x-dropdown-link :href="url('admin/index')">
                                     管理者一覧へ
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="url('admin/review/manager')">
+                                    口コミ管理へ
+                                </x-dropdown-link>
                             @endif
                             @if( 1 == Auth::user()->role )
                                 <x-dropdown-link :href="url('admin/reservations')">

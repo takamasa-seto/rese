@@ -83,7 +83,7 @@ class ReviewController extends Controller
         //投稿したユーザか、管理者のみが削除可能
         $account_check = false;
         if ( Auth::guard('admin')->check() ) {
-            if ( $this->isAdmin(Auth::user()->role) ) $account_check = true;
+            if ( $this->isAdmin(Auth::guard('admin')->user()->role) ) $account_check = true;
         }
         elseif ( Auth::check() ) {
             if ( Auth::user()->id == $request->user_id ) $account_check = true;
@@ -167,5 +167,50 @@ class ReviewController extends Controller
         }
 
         return view('review_shop_index', compact('shop', 'reviews'));
+    }
+
+    /*
+        管理者用の口コミ閲覧画面
+    */
+    public function adminIndex(Request $request)
+    {
+        if ( !Auth::guard('admin')->check() ) return redirect('admin/login'); 
+        if (!$this->isAdmin(Auth::guard('admin')->user()->role)) return redirect('admin/login');
+
+        $all_shops = 'All shops';     // 全店舗のフィルタに表示する文字列
+
+        /* ドロップダウンリストに表示する文字列の生成 */
+        $shops = Shop::all();
+        $shop_indexes = array($all_shops);
+        foreach ($shops as $shop) {
+            $shop_indexes[] = $shop['name'];
+        }
+        
+        //セッション情報の取得
+        $search_shop = session()->has('search_shop') ? session('search_shop') : $all_shops;
+        if( $request->has('search_shop') ) $search_shop = $request->search_shop;
+        session(['search_shop' => $search_shop]);
+        if ($search_shop == $all_shops) $search_shop = NULL;
+ 
+        //検索
+        $shops = Shop::select()->NameSearch($search_shop)->get();
+        $reviews = [];
+        foreach ($shops as $shop) {
+            $tmp_reviews = Review::select()->ShopSearch($shop->id)->get();
+            foreach ($tmp_reviews as $tmp_review) {
+                $tmp_array = [
+                    'shop_id' => $tmp_review->shop->id,
+                    'shop_name' => $tmp_review->shop->name,
+                    'user_id' => $tmp_review->user->id,
+                    'user_name' => $tmp_review->user->name,
+                    'star' => $tmp_review->star,
+                    'comment' => $tmp_review->comment,
+                    'image_url' => empty($tmp_review->image_url) ? null : Storage::url($tmp_review->image_url)
+                ];
+                $reviews[] = $tmp_array;
+            }
+        }
+        
+        return view('/admin/review_manager', compact('shop_indexes', 'reviews'));        
     }
 }
