@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use DateTime;
+use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Admin;
@@ -14,6 +15,7 @@ use App\Models\Review;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\AddShopRequest;
 use App\Http\Traits\Content;
+use App\Consts\SortOptConst;
 
 class ShopController extends Controller
 {
@@ -46,12 +48,18 @@ class ShopController extends Controller
             }
         }
 
-        /* 検索キーの取得 */
+        /* ソートオプションの取得 */
+        $sort_option = session()->has('sort_option') ? session('sort_option') : SortOptConst::RANDOM;
+        if( $request->has('sort_option') ) $sort_option = $request->sort_option;
+        session(['sort_option' => $sort_option]);
+        
+        /* region検索キーの取得 */
         $search_region = session()->has('search_region') ? session('search_region') : $all_area;
         if( $request->has('search_region') ) $search_region = $request->search_region;
         session(['search_region' => $search_region]);
         if ($search_region == $all_area) $search_region = NULL;
         
+        /* genre検索キーの取得 */
         $search_genre = session()->has('search_genre') ? session('search_genre') : $all_genre;
         if( $request->has('search_genre') ) $search_genre = $request->search_genre;
         session(['search_genre' => $search_genre]);
@@ -67,9 +75,19 @@ class ShopController extends Controller
         $shops = Shop::select()
             ->RegionSearch($search_region)
             ->GenreSearch($search_genre)
-            ->NameSearch($search_name)
-            ->get();
-        
+            ->NameSearch($search_name);
+
+        if (SortOptConst::RANDOM == $sort_option) {
+            $shops = $shops->inRandomOrder();
+            $shops = $shops->get();
+        } elseif (SortOptConst::DESCENDING == $sort_option or SortOptConst::ASCENDING == $sort_option) {
+            $shops = $shops->get();
+            $shops = Arr::sort($shops, function($value) {
+                $reviews = $value->reviews()->get();
+                return $reviews->isEmpty() ? 0 : $reviews->avg('star');
+            });  //Arr::sortはコレクションもソートできる.戻り値は配列
+            if (SortOptConst::DESCENDING == $sort_option) $shops = array_reverse($shops);
+        }
         /* viewに渡す用にデータを加工 */
         foreach ($shops as $shop) {
             $shop['image_url'] = Storage::url($shop['image_url']);

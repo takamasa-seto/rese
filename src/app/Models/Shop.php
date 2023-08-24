@@ -46,4 +46,8 @@ class Shop extends Model
         return $this->belongsToMany(Admin::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }
