@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Auth;
 use DateTime;
 use Arr;
+use Exception;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Admin;
@@ -276,6 +279,254 @@ class ShopController extends Controller
 
         $message = '店舗を新規登録しました。';   
         return redirect('/admin/new_shop') ->with('message', $message);
+    }
+
+    /*
+        店舗情報のCSVインポート画面表示(管理者用)
+    */
+    public function createCsvImporter(Request $request)
+    {
+        if ( !Auth::guard('admin')->check() ) return redirect('admin/login'); 
+        if (!$this->isAdmin(Auth::guard('admin')->user()->role)) return redirect('admin/login');
+
+        return view('/admin/shop_csv_importer');
+    }
+
+    /*
+        CSVファイルのヘッダ定義
+    */
+    const CSV_HEADER = [
+        "name",
+        "region",
+        "genre",
+        "description",
+        "image_url",
+        "operation_pattern",
+        "time_per_reservation",
+        "table_sixteen_num",
+        "table_eight_num",
+        "table_four_num",
+        "table_two_num",
+        "table_one_num"
+    ];
+
+    /* CSVの各レコードのバリデーション */
+    private function csvValidate($data)
+    {
+        // バリデーションルール
+        $rules = [
+            'name' => ['required', 'string', 'max:50'],
+            'region' => ['required', Rule::in(['東京都', '大阪府', '福岡県'])],
+            'genre' => ['required', Rule::in(['寿司', '焼肉', 'イタリアン', '居酒屋', 'ラーメン'])],
+            'description' => ['required', 'string', 'max:400'],
+            'image_url' => ['active_url',  'ends_with:.jpeg,.jpg,.png'],
+            'operation_pattern' => ['required', 'numeric', 'between:1,2'],
+            'time_per_reservation' => ['required', 'date_format:H:i'],
+            'table_sixteen_num' => ['required', 'numeric', 'between:0,255'],
+            'table_eight_num' => ['required', 'numeric', 'between:0,255'],
+            'table_four_num' => ['required', 'numeric', 'between:0,255'],
+            'table_two_num' => ['required', 'numeric', 'between:0,255'],
+            'table_one_num' => ['required', 'numeric', 'between:0,255']
+        ];
+
+        // バリデーション対象項目
+        $attributes = [
+            'name' => '店舗名',
+            'region' => '地域',
+            'genre' => 'ジャンル',
+            'description' => '店舗概要',
+            'image_url' => '画像URL',
+            'operation_pattern' => '営業パターン',
+            'time_per_reservation' => '予約確保時間',
+            'table_sixteen_num' => '16名席数',
+            'table_eight_num' => '8名席数',
+            'table_four_num' => '4名席数',
+            'table_two_num' => '2名席数',
+            'table_one_num '=> '1名席数'
+        ];
+
+        $error_list = [];  //エラーのリスト
+
+        // 各行でバリデーションを行う
+        foreach ($data as $row => $value) {
+            $validator = Validator::make($value->toArray(), $rules, __('validation'), $attributes);
+            //エラー時
+            if($validator->fails()) {
+                //エラーメッセージを「xx行目:エラーメッセージ」にする
+                $num = $row + 1;
+                $error_msg = array_map(fn($message) => "{$num}行目: {$message}", $validator->errors()->all());
+                $error_list = array_merge($error_list, $error_msg);
+            }
+        }
+
+        if(!empty($error_list)) {
+            //配列を改行コード区切りの文字列にする
+            $excep_msg = implode("\n", $error_list);
+            throw new Exception($excep_msg);
+        }
+
+        return;
+    }
+
+    /*
+        CSVファイルからの店舗情報登録(管理者用)
+    */
+    public function storeFromCsv(Request $request)
+    {
+        if ( !Auth::guard('admin')->check() ) return redirect('admin/login'); 
+        if (!$this->isAdmin(Auth::guard('admin')->user()->role)) return redirect('admin/login');
+
+        try {
+            $this->mySaveCsv($request);
+            $data = $this->myCsv2Collection();
+            $data = $this->myGetHeaderCollection($data);
+            $this->csvValidate($data);
+            $this->myImageUrlDownload($data);           
+        } catch (Exception $e) {
+            $error_msg = $e->getMessage();
+            return redirect('/admin/shop_csv_importer')->with('error', $error_msg);
+        }
+
+        //データベースに登録
+        foreach( $data as $value) {
+            //店舗の登録
+            $shop_info = $value->only([
+                'name',
+                'region',
+                'genre',
+                'description',
+                'image_url',
+                'operation_pattern',
+                'time_per_reservation'
+            ])->toArray();
+            $shop = Shop::create($shop_info);
+
+            //テーブル(座席)の追加
+            $this->tableAdd($shop->id, $value['table_sixteen_num'], 16);
+            $this->tableAdd($shop->id, $value['table_eight_num'], 8);
+            $this->tableAdd($shop->id, $value['table_four_num'], 4);
+            $this->tableAdd($shop->id, $value['table_two_num'], 2);
+            $this->tableAdd($shop->id, $value['table_one_num'], 1);
+
+        }
+        $message = $request->file('csv_file')->getClientOriginalName()."からのインポートに成功しました";
+        return redirect('/admin/shop_csv_importer')->with('message', $message);
+    }
+
+    /*
+        CSVファイルのストレージ保存(プライベート関数)
+    */
+    private function mySaveCsv(Request $request)
+    {
+        // ファイルを保存
+        if($request->hasFile('csv_file')) {
+            $csv_file = $request->file('csv_file');
+            if($csv_file->getClientOriginalExtension() !== "csv") {
+                throw new Exception("拡張子が不正です。");
+            }
+            $path = 'rese\shops.csv';
+            if('local' == env('FILESYSTEM_DRIVER')) {
+                Storage::putFileAs('', $csv_file, 'public\\'.$path);
+            } else {
+                Storage::putFileAs('', $csv_file, $path);
+            }
+        } else {
+            throw new Exception("CSVファイルの取得に失敗しました。");
+        }
+    }
+
+    /*
+        CSVファイルの情報をコレクションに格納(プライベート関数)
+    */
+    private function myCsv2Collection()
+    {
+        // ファイル内容取得
+        $path = 'rese\shops.csv';
+        if('local' == env('FILESYSTEM_DRIVER')) {
+            $csv = Storage::get('public\\'.$path);
+        } else {
+            $csv = Storage::get('$path');
+        }
+        // 改行コードを統一
+        $csv = str_replace(array("\r\n","\r"), "\n", $csv);
+        // 行単位のコレクション作成
+        $data = collect(explode("\n", $csv))->reject(function ($name) {
+            return empty($name);  //空の要素を削除
+        });
+
+        return $data;
+    }
+
+    /*
+        コレクション情報をHEADER情報をkeyにもつコレクションに変換(プライベート関数)
+    */
+    private function myGetHeaderCollection($data)
+    {
+        // header作成と項目数チェック
+        $header = collect(self::CSV_HEADER);
+        $fileHeader = collect(explode(",", $data->shift()));
+        if($header->count() !== $fileHeader->count()) {
+            throw new Exception("項目数エラー");
+        }
+        
+        // 連想配列のコレクションを作成
+        try {
+            $file_data = $data->map(function ($oneline) use ($header) {
+                return $header->combine(collect(explode(",", $oneline)));
+            });
+        } catch (Exception $e) {
+            throw new Exception("項目数エラー");
+        }
+
+        return $file_data;
+    }
+
+    /*
+        画像URLからファイルをダウンロードしてストレージ保存
+        画像URLのカラムをストレージのURLに差し替える(プライベート関数)
+    */
+    private function myImageUrlDownload($data)
+    {
+        foreach($data as $row => $value) {
+            $num = $row + 1;
+            
+            //ファイル名と拡張子名を取得
+            $flname = substr($value['image_url'], strrpos($value['image_url'], '/') + 1);
+            $ext = substr($value['image_url'], strrpos($value['image_url'], '.') + 1);
+            //画像をダウンロード(失敗するとfalseが返ってくる)
+            try {
+                $img_file = file_get_contents($value['image_url']);
+            } catch (Exception $e) {
+                throw new Exception("{$num}行目: 画像URLのファイル読込に失敗しました。");
+            }
+            if($img_file) {
+                $path = 'rese\image\\'.$flname;
+                if('local' == env('FILESYSTEM_DRIVER')) {
+                    Storage::put('public\\'.$path, $img_file, );
+                } else {
+                    Storage::put($path, $img_file);
+                }
+                $value['image_url'] = $path;
+            } else {
+                throw new Exception("{$num}行目: 画像URLのファイル読込に失敗しました。");
+            }
+        }
+
+        return;
+    }
+
+    /*
+        テーブル数、座席数に応じたテーブルをデータベースに登録する(プライベート関数)
+    */
+    private function tableAdd($shop_id, $table_num, $seat_num)
+    {
+        for($id = 1; $id <= $table_num; $id++) {
+            Table::create([
+                'shop_id' => $shop_id,
+                'name' => "{$seat_num}名様席{$id}",
+                'seat_num' => $seat_num
+            ]);
+        }
     }
 
 }

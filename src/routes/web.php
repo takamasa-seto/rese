@@ -67,6 +67,9 @@ Route::prefix('admin')->name('admin.')->group(function(){
 
     //Review機能の追加
     Route::get('/review/manager', [ReviewController::class, 'adminIndex'])->middleware(['auth:admin']);
+    //CSVインポート機能の追加
+    Route::get('/shop_csv_importer', [ShopController::class, 'createCsvImporter'])->middleware(['auth:admin']);
+    Route::post('/store_from_csv', [ShopController::class, 'storeFromCsv'])->middleware(['auth:admin']);
 
     require __DIR__.'/admin.php';
 });
