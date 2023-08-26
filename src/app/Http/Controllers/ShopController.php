@@ -445,7 +445,7 @@ class ShopController extends Controller
         if('local' == env('FILESYSTEM_DRIVER')) {
             $csv = Storage::get('public\\'.$path);
         } else {
-            $csv = Storage::get('$path');
+            $csv = Storage::get($path);
         }
         // 改行コードを統一
         $csv = str_replace(array("\r\n","\r"), "\n", $csv);
