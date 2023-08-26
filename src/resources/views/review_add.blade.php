@@ -1,5 +1,49 @@
 <x-app-layout>
     <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var dropZone = document.getElementById('drop-zone');
+            var preview = document.getElementById('preview');
+            var fileInput = document.getElementById('file-input');
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.style.background = '#e1e7f0';
+            }, false);
+
+            dropZone.addEventListener('dragleave', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.style.background = 'rgb(243, 244, 246)';
+            }, false);
+
+            dropZone.addEventListener('drop', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.style.background = 'rgb(243, 244, 246)';
+                var files = e.dataTransfer.files;
+                if (files.length > 1) return alert('アップロードできるファイルは1つだけです');
+                fileInput.files = files;
+                previewFile(files[0]);
+            }, false);
+
+            fileInput.addEventListener('change', function() {
+                previewFile(this.files[0]);
+            });
+
+        });
+
+        function previewFile(file) {
+            var fr = new FileReader();
+            fr.readAsDataURL(file);
+            fr.onload = function() {
+                var img = document.createElement('img');
+                img.setAttribute('src', fr.result);
+                preview.innerHTML = '';
+                preview.appendChild(img);
+            };
+        }
+
         function ShowLength( str ) {
             document.getElementById("inputlength").innerHTML = str.length;
         }
@@ -64,12 +108,16 @@
                     </div>
                     <p class="mt-6">画像の追加</p>
                     <div>
-                        <input type="file" name="image_file">
+                        <div id="drop-zone" class="border p-8 text-center">
+                            <p>ファイルをドラッグ＆ドロップもしくは</p>
+                            <input type="file" name="image_file" id="file-input">
+                        </div>
                         <div class="text-red-600">
                             @error('image_file')
                                 ※{{ $message }}
                             @enderror
                         </div>
+                        <div id="preview" class="w-56"></div>
                     </div>
                 </div>
             </div>
